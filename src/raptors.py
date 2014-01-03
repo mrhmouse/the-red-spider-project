@@ -20,7 +20,7 @@ def inpt(prompt):
 
 # https://github.com/blog/699-making-github-more-open-git-backed-wikis
 if os.path.exists(os.path.expandvars("$RED_SPIDER_ROOT") + "/config/raptors"):
-    print("You already have a copy of the raptor game data files.  Do you want to update it? (y/n)")
+    print("You already have a copy of the raptor game data files.  Do you want to update it? (y/N)")
     c = inpt("? ")
     if c == "y":
         print("Downloading raptor game data, please wait...")
@@ -30,7 +30,7 @@ if os.path.exists(os.path.expandvars("$RED_SPIDER_ROOT") + "/config/raptors"):
     else:
         print("Ok, keeping the game as is...")
 else:
-    print("You do not have a copy of the raptor game data files.  Do you want to download them? (y/n)")
+    print("You do not have a copy of the raptor game data files.  Do you want to download them? (y/N)")
     c = inpt("? ")
     if c == "y":
         print("Downloading raptor game data, please wait...")
@@ -56,13 +56,23 @@ def printops(room):
     ops = chunks[2].split("\n")
     print("Do you want to:")
     i = 0
-    for op in ops[1:-1]:
-        print(chr(97+i) + ") " + op.split("::")[0])
-        i = i + 1
+    for op in ops:
+        if not (op.split("::")[0] == ""):
+            print(chr(97+i) + ") " + op.split("::")[0])
+            i = i + 1
+
+def gotoroom(inp, room):
+    global croom
+    chunks = room.split("~~")
+    ops = chunks[2].split("\n")
+    i = 0
+    for op in ops:
+        if not (op.split("::")[0] == ""):
+            if inp == chr(97+i):
+                croom = op.split("::")[1]
+            i = i + 1
 
 while playing: # main loop
-    croomdata = open(basedir + croom + ".md")
-    croomtext = croomdata.read()
-    printdata(croomtext)
-    printops(croomtext)
-    c = inpt("")
+    printdata(open(basedir + croom + ".md").read())
+    printops(open(basedir + croom + ".md").read())
+    gotoroom(inpt(""), open(basedir + croom + ".md").read())
