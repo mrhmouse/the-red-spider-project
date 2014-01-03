@@ -75,6 +75,10 @@ def gotoroom(inp, room):
             i = i + 1
 
 while playing: # main loop
-    printdata(open(basedir + croom + ".md").read())
-    printops(open(basedir + croom + ".md").read())
-    gotoroom(inpt(""), open(basedir + croom + ".md").read())
+    try:
+        printdata(open(basedir + croom + ".md").read())
+        printops(open(basedir + croom + ".md").read())
+        gotoroom(inpt(""), open(basedir + croom + ".md").read())
+    except FileNotFoundError:
+        print("The story has not been written this far yet.  Do you want to help?\nGo to `https://github.com/WesleyAC/the-red-spider-project/wiki/" + croom + "/_edit` to decide what happens next!\nRead `https://github.com/WesleyAC/the-red-spider-project/wiki/How-to-make-a-raptor-room` to see how to make a room!")
+        exit()
