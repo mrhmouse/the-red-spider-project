@@ -54,6 +54,8 @@ def printdata(room):
 def printops(room):
     chunks = room.split("~~")
     ops = chunks[2].split("\n")
+    if ops[1] == "DIE":
+        exit()
     print("Do you want to:")
     i = 0
     for op in ops:
