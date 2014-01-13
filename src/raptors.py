@@ -25,7 +25,7 @@ def inpt(prompt):
     except:
         return input(prompt)
 
-def ask(message, prompt):
+def ask(message, prompt="? "):
     print(message)
     response = inpt(prompt)
     return response == "y":
@@ -37,13 +37,13 @@ def clone():
 
 # https://github.com/blog/699-making-github-more-open-git-backed-wikis
 if os.path.exists(GAME_DIR):
-    if ask("You already have a copy of the raptor game data files.  Do you want to update it? (y/N)", "? "):
+    if ask("You already have a copy of the raptor game data files.  Do you want to update it? (y/N)"):
         shutil.rmtree(GAME_DIR)
         clone()
     else:
         print("Ok, keeping the game as is...")
 else:
-    if ask("You do not have a copy of the raptor game data files.  Do you want to download them? (y/N)", "? "):
+    if ask("You do not have a copy of the raptor game data files.  Do you want to download them? (y/N)"):
         clone()
     else:
         print("You cannot play the raptor game without downloading the data.  Exiting...")
