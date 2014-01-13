@@ -4,15 +4,6 @@ import os
 import subprocess
 import shutil
 
-print("""Welcome to the
- ____      _    ____ _____ ___  ____     ____    _    __  __ _____ 
-|  _ \    / \  |  _ \_   _/ _ \|  _ \   / ___|  / \  |  \/  | ____|
-| |_) |  / _ \ | |_) || || | | | |_) | | |  _  / _ \ | |\/| |  _|  
-|  _ <  / ___ \|  __/ | || |_| |  _ <  | |_| |/ ___ \| |  | | |___ 
-|_| \_\/_/   \_\_|    |_| \___/|_| \_\  \____/_/   \_\_|  |_|_____|
-
-                                                                    """)
-
 RED_SPIDER_ROOT = os.path.expandvars("$RED_SPIDER_ROOT")
 GAME_DIR = os.path.join(RED_SPIDER_ROOT, "config", "raptors")
 CROOM = "Raptor-Game"
@@ -77,6 +68,15 @@ def gotoroom(inp, room):
             i = i + 1
 
 ### MAIN GAME ###
+
+print("""Welcome to the
+ ____      _    ____ _____ ___  ____     ____    _    __  __ _____ 
+|  _ \    / \  |  _ \_   _/ _ \|  _ \   / ___|  / \  |  \/  | ____|
+| |_) |  / _ \ | |_) || || | | | |_) | | |  _  / _ \ | |\/| |  _|  
+|  _ <  / ___ \|  __/ | || |_| |  _ <  | |_| |/ ___ \| |  | | |___ 
+|_| \_\/_/   \_\_|    |_| \___/|_| \_\  \____/_/   \_\_|  |_|_____|
+
+                                                                    """)
 
 # https://github.com/blog/699-making-github-more-open-git-backed-wikis
 # Setup the game data, if needed.
