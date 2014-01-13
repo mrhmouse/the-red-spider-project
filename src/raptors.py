@@ -13,10 +13,9 @@ print("""Welcome to the
                                                                     """)
 def inpt(prompt):
     try: # Just another sign that python 3 sucks.  Deal.
-        c = raw_input(prompt)
+        return raw_input(prompt)
     except:
-        c = input(prompt)
-    return c
+        return input(prompt)
 
 # https://github.com/blog/699-making-github-more-open-git-backed-wikis
 if os.path.exists(os.path.expandvars("$RED_SPIDER_ROOT") + "/config/raptors"):
