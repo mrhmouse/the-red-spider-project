@@ -19,17 +19,26 @@ CROOM = "Raptor-Game"
 PLAYING = True
 
 def inpt(prompt):
+    """Display a prompt to the user and return their response."""
     try: # Just another sign that python 3 sucks.  Deal.
         return raw_input(prompt)
     except:
         return input(prompt)
 
 def ask(message, prompt="? "):
+    """
+    Display a message to the user, then display
+    a prompt and wait for a response.
+    
+    If the response is 'y', return true.
+    Else, return false.
+    """
     print(message)
     response = inpt(prompt)
     return response == "y"
 
 def clone():
+    """Clone game data from GitHub."""
     print("Downloading raptor game data, please wait...")
     subprocess.call(["git", "clone", "https://github.com/WesleyAC/the-red-spider-project.wiki.git", GAME_DIR])
     print("Downloaded raptor game data!")
@@ -49,6 +58,7 @@ else:
         exit()
 
 def printdata(room):
+    """TODO: Document this."""
     lines = room.split("\n")
     chunks = room.split("~~")
     print(lines[0])
@@ -56,6 +66,7 @@ def printdata(room):
     print(chunks[1])
 
 def printops(room):
+    """TODO: Document this."""
     chunks = room.split("~~")
     ops = chunks[2].split("\n")
     if ops[1] == "DIE":
@@ -68,6 +79,7 @@ def printops(room):
             i = i + 1
 
 def gotoroom(inp, room):
+    """TODO: Document this."""
     global CROOM
     chunks = room.split("~~")
     ops = chunks[2].split("\n")
