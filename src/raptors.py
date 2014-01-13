@@ -86,5 +86,7 @@ while PLAYING: # main loop
         printops(current_room)
         gotoroom(inpt(""), current_room)
     except FileNotFoundError:
-        print("The story has not been written this far yet.  Do you want to help?\nGo to `https://github.com/WesleyAC/the-red-spider-project/wiki/" + CROOM + "/_edit` to decide what happens next!\nRead `https://github.com/WesleyAC/the-red-spider-project/wiki/How-to-make-a-raptor-room` to see how to make a room!")
+        print("The story has not been written this far yet.  Do you want to help?")
+        print("Go to `https://github.com/WesleyAC/the-red-spider-project/wiki/" + CROOM + "/_edit` to decide what happens next!")
+        print("Read `https://github.com/WesleyAC/the-red-spider-project/wiki/How-to-make-a-raptor-room` to see how to make a room!")
         exit()
