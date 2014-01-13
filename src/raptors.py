@@ -78,8 +78,8 @@ def gotoroom(inp, room):
             i = i + 1
 
 while playing: # main loop
-    current_room = open(os.path.join(GAME_DIR, croom + ".md")).read()
     try:
+        current_room = open(os.path.join(GAME_DIR, croom + ".md")).read()
         printdata(current_room)
         printops(current_room)
         gotoroom(inpt(""), current_room)
