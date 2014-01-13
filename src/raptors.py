@@ -18,7 +18,6 @@ GAME_DIR = os.path.join(RED_SPIDER_ROOT, "config", "raptors")
 CROOM = "Raptor-Game"
 PLAYING = True
 
-
 def inpt(prompt):
     try: # Just another sign that python 3 sucks.  Deal.
         return raw_input(prompt)
@@ -28,11 +27,11 @@ def inpt(prompt):
 def ask(message, prompt="? "):
     print(message)
     response = inpt(prompt)
-    return response == "y":
+    return response == "y"
 
 def clone():
     print("Downloading raptor game data, please wait...")
-    subprocess.call(["git", "clone", "https://github.com/WesleyAC/the-red-spider-project.wiki.git", GAME_DIR)
+    subprocess.call(["git", "clone", "https://github.com/WesleyAC/the-red-spider-project.wiki.git", GAME_DIR])
     print("Downloaded raptor game data!")
 
 # https://github.com/blog/699-making-github-more-open-git-backed-wikis
