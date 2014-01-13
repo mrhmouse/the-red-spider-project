@@ -43,20 +43,6 @@ def clone():
     subprocess.call(["git", "clone", "https://github.com/WesleyAC/the-red-spider-project.wiki.git", GAME_DIR])
     print("Downloaded raptor game data!")
 
-# https://github.com/blog/699-making-github-more-open-git-backed-wikis
-if os.path.exists(GAME_DIR):
-    if ask("You already have a copy of the raptor game data files.  Do you want to update it? (y/N)"):
-        shutil.rmtree(GAME_DIR)
-        clone()
-    else:
-        print("Ok, keeping the game as is...")
-else:
-    if ask("You do not have a copy of the raptor game data files.  Do you want to download them? (y/N)"):
-        clone()
-    else:
-        print("You cannot play the raptor game without downloading the data.  Exiting...")
-        exit()
-
 def printdata(room):
     """TODO: Document this."""
     lines = room.split("\n")
@@ -89,6 +75,24 @@ def gotoroom(inp, room):
             if inp == chr(97+i):
                 CROOM = op.split("::")[1]
             i = i + 1
+
+### MAIN GAME ###
+
+# https://github.com/blog/699-making-github-more-open-git-backed-wikis
+# Setup the game data, if needed.
+if os.path.exists(GAME_DIR):
+    if ask("You already have a copy of the raptor game data files.  Do you want to update it? (y/N)"):
+        shutil.rmtree(GAME_DIR)
+        clone()
+    else:
+        print("Ok, keeping the game as is...")
+else:
+    if ask("You do not have a copy of the raptor game data files.  Do you want to download them? (y/N)"):
+        clone()
+    else:
+        print("You cannot play the raptor game without downloading the data.  Exiting...")
+        exit()
+
 
 while PLAYING: # main loop
     try:
