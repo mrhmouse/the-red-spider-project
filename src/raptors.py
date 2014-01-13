@@ -10,7 +10,11 @@ print("""Welcome to the
 | |_) |  / _ \ | |_) || || | | | |_) | | |  _  / _ \ | |\/| |  _|  
 |  _ <  / ___ \|  __/ | || |_| |  _ <  | |_| |/ ___ \| |  | | |___ 
 |_| \_\/_/   \_\_|    |_| \___/|_| \_\  \____/_/   \_\_|  |_|_____|
+
                                                                     """)
+
+RED_SPIDER_ROOT = os.path.expandvars("$RED_SPIDER_ROOT")
+
 def inpt(prompt):
     try: # Just another sign that python 3 sucks.  Deal.
         return raw_input(prompt)
@@ -18,13 +22,13 @@ def inpt(prompt):
         return input(prompt)
 
 # https://github.com/blog/699-making-github-more-open-git-backed-wikis
-if os.path.exists(os.path.expandvars("$RED_SPIDER_ROOT") + "/config/raptors"):
+if os.path.exists(RED_SPIDER_ROOT + "/config/raptors"):
     print("You already have a copy of the raptor game data files.  Do you want to update it? (y/N)")
     c = inpt("? ")
     if c == "y":
         print("Downloading raptor game data, please wait...")
-        shutil.rmtree(os.path.expandvars("$RED_SPIDER_ROOT") + "/config/raptors/")
-        subprocess.call(["git", "clone", "https://github.com/WesleyAC/the-red-spider-project.wiki.git", os.path.expandvars("$RED_SPIDER_ROOT") + "/config/raptors"])
+        shutil.rmtree(RED_SPIDER_ROOT + "/config/raptors/")
+        subprocess.call(["git", "clone", "https://github.com/WesleyAC/the-red-spider-project.wiki.git", RED_SPIDER_ROOT + "/config/raptors"])
         print("Downloaded raptor game data!")
     else:
         print("Ok, keeping the game as is...")
@@ -33,14 +37,14 @@ else:
     c = inpt("? ")
     if c == "y":
         print("Downloading raptor game data, please wait...")
-        subprocess.call(["git", "clone", "https://github.com/WesleyAC/the-red-spider-project.wiki.git", os.path.expandvars("$RED_SPIDER_ROOT") + "/config/raptors"])
+        subprocess.call(["git", "clone", "https://github.com/WesleyAC/the-red-spider-project.wiki.git", RED_SPIDER_ROOT + "/config/raptors"])
         print("Downloaded raptor game data!")
     else:
         print("You cannot play the raptor game without downloading the data.  Exiting...")
         exit()
 
 croom = "Raptor-Game"
-basedir = os.path.expandvars("$RED_SPIDER_ROOT") + "/config/raptors/"
+basedir = RED_SPIDER_ROOT + "/config/raptors/"
 playing = True
 
 def printdata(room):
