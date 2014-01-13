@@ -15,6 +15,9 @@ print("""Welcome to the
 
 RED_SPIDER_ROOT = os.path.expandvars("$RED_SPIDER_ROOT")
 GAME_DIR = os.path.join(RED_SPIDER_ROOT, "config", "raptors")
+CROOM = "Raptor-Game"
+PLAYING = True
+
 
 def inpt(prompt):
     try: # Just another sign that python 3 sucks.  Deal.
@@ -44,9 +47,6 @@ else:
         print("You cannot play the raptor game without downloading the data.  Exiting...")
         exit()
 
-croom = "Raptor-Game"
-playing = True
-
 def printdata(room):
     lines = room.split("\n")
     chunks = room.split("~~")
@@ -67,22 +67,22 @@ def printops(room):
             i = i + 1
 
 def gotoroom(inp, room):
-    global croom
+    global CROOM
     chunks = room.split("~~")
     ops = chunks[2].split("\n")
     i = 0
     for op in ops:
         if not (op.split("::")[0] == ""):
             if inp == chr(97+i):
-                croom = op.split("::")[1]
+                CROOM = op.split("::")[1]
             i = i + 1
 
-while playing: # main loop
+while PLAYING: # main loop
     try:
-        current_room = open(os.path.join(GAME_DIR, croom + ".md")).read()
+        current_room = open(os.path.join(GAME_DIR, CROOM + ".md")).read()
         printdata(current_room)
         printops(current_room)
         gotoroom(inpt(""), current_room)
     except FileNotFoundError:
-        print("The story has not been written this far yet.  Do you want to help?\nGo to `https://github.com/WesleyAC/the-red-spider-project/wiki/" + croom + "/_edit` to decide what happens next!\nRead `https://github.com/WesleyAC/the-red-spider-project/wiki/How-to-make-a-raptor-room` to see how to make a room!")
+        print("The story has not been written this far yet.  Do you want to help?\nGo to `https://github.com/WesleyAC/the-red-spider-project/wiki/" + CROOM + "/_edit` to decide what happens next!\nRead `https://github.com/WesleyAC/the-red-spider-project/wiki/How-to-make-a-raptor-room` to see how to make a room!")
         exit()
