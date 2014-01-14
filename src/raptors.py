@@ -87,100 +87,121 @@ class Room:
         for line in f:
             self.comments += line
 
-RED_SPIDER_ROOT = os.path.expandvars("$RED_SPIDER_ROOT")
-GAME_DIR = os.path.join(RED_SPIDER_ROOT, "config", "raptors")
+class RaptorGame:
+    def __init__(self, game_dir):
+        self.game_dir = game_dir
+        self.__git_args = [
+            "git",
+            "clone",
+            "https://github.com/WesleyAC/the-red-spider-project.wiki.git",
+            self.game_dir
+        ]
 
-def inpt(prompt):
-    """Display a prompt to the user and return their response."""
-    try: # Just another sign that python 3 sucks.  Deal.
-        return raw_input(prompt)
-    except:
-        return input(prompt)
+        self.welcome()
+        self.setup()
+        self.play_game()
 
-def ask(message, prompt="? "):
-    """
-    Display a message to the user, then display
-    a prompt and wait for a response.
-    
-    If the response is 'y', return true.
-    Else, return false.
-    """
-    print(message)
-    response = inpt(prompt)
-    return response == "y"
+    def inpt(self, prompt):
+        """Display a prompt to the user and return their response."""
+        try: # Just another sign that python 3 sucks.  Deal.
+            return raw_input(prompt)
+        except:
+            return input(prompt)
 
-def clone():
-    """Clone game data from GitHub."""
-    print("Downloading raptor game data, please wait...")
-    subprocess.call(["git", "clone", "https://github.com/WesleyAC/the-red-spider-project.wiki.git", GAME_DIR])
-    print("Downloaded raptor game data!")
-
-### MAIN GAME ###
-
-print("""Welcome to the
- ____      _    ____ _____ ___  ____     ____    _    __  __ _____ 
-|  _ \    / \  |  _ \_   _/ _ \|  _ \   / ___|  / \  |  \/  | ____|
-| |_) |  / _ \ | |_) || || | | | |_) | | |  _  / _ \ | |\/| |  _|  
-|  _ <  / ___ \|  __/ | || |_| |  _ <  | |_| |/ ___ \| |  | | |___ 
-|_| \_\/_/   \_\_|    |_| \___/|_| \_\  \____/_/   \_\_|  |_|_____|
-
-                                                                    """)
-
-# https://github.com/blog/699-making-github-more-open-git-backed-wikis
-# Setup the game data, if needed.
-if os.path.exists(GAME_DIR):
-    if ask("You already have a copy of the raptor game data files.  Do you want to update it? (y/N)"):
-        shutil.rmtree(GAME_DIR)
-        clone()
-    else:
-        print("Ok, keeping the game as is...")
-else:
-    if ask("You do not have a copy of the raptor game data files.  Do you want to download them? (y/N)"):
-        clone()
-    else:
-        print("You cannot play the raptor game without downloading the data.  Exiting...")
-        exit()
+    def ask(self, message, prompt="? "):
+        """
+        Display a message to the user, then display
+        a prompt and wait for a response.
+        
+        If the response is 'y', return true.
+        Else, return false.
+        """
+        print(message)
+        response = self.inpt(prompt)
+        return response == "y"
 
 
-room_name = "Raptor-Game"
-while True: # main loop
-    try:
-        current_room = Room(os.path.join(GAME_DIR, room_name + ".md"))
-        # Print the room title.
-        print(current_room.title)
+    def clone(self):
+        """Clone game data from GitHub."""
+        print("Downloading raptor game data, please wait...")
+        subprocess.call(self.__git_args)
+        print("Downloaded raptor game data!")
 
-        # Print the description.
-        print(current_room.description)
+    def welcome(self):
+        print("""Welcome to the
+        ____      _    ____ _____ ___  ____     ____    _    __  __ _____ 
+        |  _ \    / \  |  _ \_   _/ _ \|  _ \   / ___|  / \  |  \/  | ____|
+        | |_) |  / _ \ | |_) || || | | | |_) | | |  _  / _ \ | |\/| |  _|  
+        |  _ <  / ___ \|  __/ | || |_| |  _ <  | |_| |/ ___ \| |  | | |___ 
+        |_| \_\/_/   \_\_|    |_| \___/|_| \_\  \____/_/   \_\_|  |_|_____|
 
-        # Check for death
-        for option in current_room.options:
-            if option.death:
-                # The player has died.
+                                                                            """)
+    def setup(self):
+        """Setup the game data, if needed."""
+        # https://github.com/blog/699-making-github-more-open-git-backed-wikis
+        if os.path.exists(self.game_dir):
+            if self.ask("You already have a copy of the raptor game data files. " +
+            "Do you want to update it? (y/N)"):
+                shutil.rmtree(self.game_dir)
+                clone()
+            else:
+                print("Ok, keeping the game as is...")
+        else:
+            if self.ask("You do not have a copy of the raptor game data files. " +
+            "Do you want to download them? (y/N)"):
+                clone()
+            else:
+                print("You cannot play the raptor game without downloading the data. " +
+                "Exiting...")
                 exit()
 
-        # Wait for input.
-        valid_response = False
-        while not valid_response:
-            # Print each option.
-            i = 0
-            for option in current_room.options:
-                print("{0}) {1}".format(i, option.label))
-                i += 1
-
+    def play_game(self):
+        room_name = "Raptor-Game"
+        while True:
             try:
-                response = int(inpt(""))
-            except ValueError:
-                print("Please choose a number.")
-                continue
+                current_room = Room(os.path.join(self.game_dir, room_name + ".md"))
+                # Print the room title.
+                print(current_room.title)
 
-            if len(current_room.options) <= response:
-                print("Please choose one of the listed numbers.")
-                continue
+                # Print the description.
+                print(current_room.description)
 
-            room_name = current_room.options[response].room
-            valid_response = True
-    except FileNotFoundError:
-        print("The story has not been written this far yet.  Do you want to help?")
-        print("Go to `https://github.com/WesleyAC/the-red-spider-project/wiki/" + CROOM + "/_edit` to decide what happens next!")
-        print("Read `https://github.com/WesleyAC/the-red-spider-project/wiki/How-to-make-a-raptor-room` to see how to make a room!")
-        exit()
+                # Check for death
+                for option in current_room.options:
+                    if option.death:
+                        # The player has died.
+                        exit()
+
+                # Wait for input.
+                valid_response = False
+                while not valid_response:
+                    # Print each option.
+                    i = 0
+                    for option in current_room.options:
+                        print("{0}) {1}".format(i, option.label))
+                        i += 1
+
+                    try:
+                        response = int(self.inpt(""))
+                    except ValueError:
+                        print("Please choose a number.")
+                        continue
+
+                    if len(current_room.options) <= response:
+                        print("Please choose one of the listed numbers.")
+                        continue
+
+                    room_name = current_room.options[response].room
+                    valid_response = True
+            except FileNotFoundError:
+                print("The story has not been written this far yet.  Do you want to help?")
+                print("Go to `https://github.com/WesleyAC/the-red-spider-project/wiki/" +
+                        room_name +
+                        "/_edit` to decide what happens next!")
+                print("Read `https://github.com/WesleyAC/the-red-spider-project/wiki/How-to-make-a-raptor-room` to see how to make a room!")
+                exit()
+
+if __name__ == "__main__":
+    red_spider_root = os.path.expandvars("$RED_SPIDER_ROOT")
+    game_dir = os.path.join(red_spider_root, "config", "raptors")
+    game = RaptorGame(game_dir)
