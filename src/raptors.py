@@ -69,8 +69,15 @@ class Room:
         for line in f:
             if line.startswith("~~"):
                 break
-            pieces = line.strip().split("::")
+
+            # Skip blank lines
+            line = line.strip()
+            if len(line) == 0:
+                break
+
+            pieces = line.split("::")
             self.options.append(Option(pieces))
+
         if len(self.options) == 0:
             fail("Expected options, but couldn't find any", f)
         self.__parseComments(f)
@@ -110,39 +117,6 @@ def clone():
     subprocess.call(["git", "clone", "https://github.com/WesleyAC/the-red-spider-project.wiki.git", GAME_DIR])
     print("Downloaded raptor game data!")
 
-def printdata(room):
-    """TODO: Document this."""
-    lines = room.split("\n")
-    chunks = room.split("~~")
-    print(lines[0])
-    print("")
-    print(chunks[1])
-
-def printops(room):
-    """TODO: Document this."""
-    chunks = room.split("~~")
-    ops = chunks[2].split("\n")
-    if ops[1] == "DIE":
-        exit()
-    print("Do you want to:")
-    i = 0
-    for op in ops:
-        if not (op.split("::")[0] == ""):
-            print(chr(97+i) + ") " + op.split("::")[0])
-            i = i + 1
-
-def gotoroom(inp, room):
-    """TODO: Document this."""
-    global CROOM
-    chunks = room.split("~~")
-    ops = chunks[2].split("\n")
-    i = 0
-    for op in ops:
-        if not (op.split("::")[0] == ""):
-            if inp == chr(97+i):
-                CROOM = op.split("::")[1]
-            i = i + 1
-
 ### MAIN GAME ###
 
 print("""Welcome to the
@@ -172,10 +146,40 @@ else:
 
 while PLAYING: # main loop
     try:
-        current_room = open(os.path.join(GAME_DIR, CROOM + ".md")).read()
-        printdata(current_room)
-        printops(current_room)
-        gotoroom(inpt(""), current_room)
+        current_room = Room(os.path.join(GAME_DIR, CROOM + ".md"))
+        # Print the room title.
+        print(current_room.title)
+
+        # Print the description.
+        print(current_room.description)
+
+        # Check for death
+        for option in current_room.options:
+            if option.death:
+                # The player has died.
+                exit()
+
+        # Wait for input.
+        valid_response = False
+        while not valid_response:
+            # Print each option.
+            i = 0
+            for option in current_room.options:
+                print("{0}) {1}".format(i, option.label))
+                i += 1
+
+            try:
+                response = int(inpt(""))
+            except ValueError:
+                print("Please choose a number.")
+                continue
+
+            if len(current_room.options) <= response:
+                print("Please choose one of the listed numbers.")
+                continue
+
+            CROOM = current_room.options[response].room
+            valid_response = True
     except FileNotFoundError:
         print("The story has not been written this far yet.  Do you want to help?")
         print("Go to `https://github.com/WesleyAC/the-red-spider-project/wiki/" + CROOM + "/_edit` to decide what happens next!")
