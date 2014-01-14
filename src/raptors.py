@@ -89,8 +89,6 @@ class Room:
 
 RED_SPIDER_ROOT = os.path.expandvars("$RED_SPIDER_ROOT")
 GAME_DIR = os.path.join(RED_SPIDER_ROOT, "config", "raptors")
-CROOM = "Raptor-Game"
-PLAYING = True
 
 def inpt(prompt):
     """Display a prompt to the user and return their response."""
@@ -144,9 +142,10 @@ else:
         exit()
 
 
-while PLAYING: # main loop
+room_name = "Raptor-Game"
+while True: # main loop
     try:
-        current_room = Room(os.path.join(GAME_DIR, CROOM + ".md"))
+        current_room = Room(os.path.join(GAME_DIR, room_name + ".md"))
         # Print the room title.
         print(current_room.title)
 
@@ -178,7 +177,7 @@ while PLAYING: # main loop
                 print("Please choose one of the listed numbers.")
                 continue
 
-            CROOM = current_room.options[response].room
+            room_name = current_room.options[response].room
             valid_response = True
     except FileNotFoundError:
         print("The story has not been written this far yet.  Do you want to help?")
