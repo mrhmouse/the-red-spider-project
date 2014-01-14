@@ -4,6 +4,82 @@ import os
 import subprocess
 import shutil
 
+class Option:
+    """An option in a room in the raptor game."""
+    def __init__(self, pieces):
+        length = len(pieces)
+        if length == 2:
+            self.label = pieces[0]
+            self.room = pieces[1]
+            self.death = False
+        elif length == 1:
+            if pieces[0] == "DIE":
+                self.death = True
+            else:
+                raise Exception("Expected a label and room, but got {0}".format(pieces[0]))
+        else:
+            raise Exception("Expected a label and a room, but got {0}".format(pieces))
+
+class Room:
+    """A room in the raptor game."""
+
+    def fail(message, f):
+        raise Exception("While parsing {0}, got exception: {1}".format(f, message))
+
+    def __init__(self, filename):
+        """Create a new room, loading the given file."""
+        with open(filename) as f:
+            self.__parse(iter(f))
+
+    def __parse(self, f):
+        """Parse a file, filling out properties of this room."""
+        # A room file is laid out as follows:
+        #   Title
+        #   ~~
+        #   Description
+        #   ~~
+        #   Options
+        #   ~~
+        #   Comments
+        self.__parseTitle(f)
+
+    def __parseTitle(self, f):
+        """Parse the title from a room and continue."""
+        self.title = ""
+        for line in f:
+            if line.startswith("~~"):
+                break
+            self.title += line
+        if len(self.title) == 0:
+            fail("Expected a title, but couldn't find one.", f)
+        self.__parseDescription(f)
+
+    def __parseDescription(self, f):
+        self.description = ""
+        for line in f:
+            if line.startswith("~~"):
+                break
+            self.description += line
+        if len(self.description) == 0:
+            fail("Expected a description, but couldn't find one.", f)
+        self.__parseOptions(f)
+
+    def __parseOptions(self, f):
+        self.options = []
+        for line in f:
+            if line.startswith("~~"):
+                break
+            pieces = line.strip().split("::")
+            self.options.append(Option(pieces))
+        if len(self.options) == 0:
+            fail("Expected options, but couldn't find any", f)
+        self.__parseComments(f)
+
+    def __parseComments(self, f):
+        self.comments = ""
+        for line in f:
+            self.comments += line
+
 RED_SPIDER_ROOT = os.path.expandvars("$RED_SPIDER_ROOT")
 GAME_DIR = os.path.join(RED_SPIDER_ROOT, "config", "raptors")
 CROOM = "Raptor-Game"
