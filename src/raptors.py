@@ -3,6 +3,7 @@
 import os
 import subprocess
 import shutil
+import json
 
 class Option:
     """An option in a room in the raptor game."""
@@ -105,7 +106,6 @@ class RaptorGame:
 
         self.welcome()
         self.setup()
-        self.play_game()
 
     def inpt(self, prompt):
         """Display a prompt to the user and return their response."""
@@ -150,7 +150,18 @@ class RaptorGame:
             for item in inv:
                 print(" - " + item)
         else:
-            print("You don't have anythin in your inventory right now!  Go get some lootz!")
+            print("You don't have anything in your inventory right now!  Go get some lootz!")
+
+    def quit(self, room_name, inv, alreadyhave_inv):
+        """Offer the user options to save and quit, or just quit."""
+        save = self.inpt("Do you want to save your game? (Y/n)")
+        if save == "n":
+            print("OK, exiting *without* saving...")
+            exit(0)
+        else:
+            savefile = open(os.path.join(red_spider_root, "config", "raptors", "raptors.json"), "w")
+            savefile.write(json.dumps([room_name, inv, alreadyhave_inv]))   
+            exit(0)
 
     def setup(self):
         """Setup the game data, if needed."""
@@ -170,12 +181,21 @@ class RaptorGame:
             else:
                 print("You cannot play the raptor game without downloading the data. " +
                 "Exiting...")
-                exit(42)
+                exit(1)
+        if os.path.exists(self.game_dir + "/../raptors.json"):
+            loadsave = self.inpt("You have a save file.  Do you want to use it? (Y/n)")
+            if loadsave == "n":
+                print("Ok, starting from the beginning...")
+            else:
+                gamedata = json.loads(open(os.path.join(red_spider_root, "config", "raptors", "raptors.json")).read())
+                self.play_game(gamedata[0], gamedata[1], gamedata[2])
+        self.play_game()
+            
 
-    def play_game(self):
-        room_name = "Raptor-Game"
-        inv = []
-        alreadyhave_inv = []
+    def play_game(self, room="Raptor-Game", inventory=[], alreadyhave_inventory=[]):
+        room_name = room
+        inv = inventory
+        alreadyhave_inv = alreadyhave_inventory
         while True:
             try:
                 current_room = Room(os.path.join(self.game_dir, room_name + ".md"))
@@ -192,7 +212,7 @@ class RaptorGame:
                         exit(37)
                     if option.inv:
                         alreadyhave = False
-                        for item in alreadyhave_inv:
+                        for item in alreadyhave_inv: # Stop the player from cheating! :P
                             if item == room_name + "/" + option.inv:
                                 alreadyhave = True
                         if not alreadyhave:
@@ -215,6 +235,8 @@ class RaptorGame:
                         response = self.inpt("")
                         if response == "i":
                             self.inventory(inv)
+                        elif response == "exit":
+                            self.quit(room_name, inv, alreadyhave_inv)
                         else:
                             response = int(response)
                     except ValueError:
@@ -234,9 +256,9 @@ class RaptorGame:
                         room_name +
                         "/_edit` to decide what happens next!")
                 print("Read `https://github.com/WesleyAC/the-red-spider-project/wiki/How-to-make-a-raptor-room` to see how to make a room!")
-                exit(1337)
+                exit(2)
 
 if __name__ == "__main__":
     red_spider_root = os.path.expandvars("$RED_SPIDER_ROOT")
-    game_dir = os.path.join(red_spider_root, "config", "raptors")
+    game_dir = os.path.join(red_spider_root, "config", "raptors", "wiki")
     game = RaptorGame(game_dir)
