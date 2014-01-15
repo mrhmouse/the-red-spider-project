@@ -143,13 +143,13 @@ class RaptorGame:
             if self.ask("You already have a copy of the raptor game data files. " +
             "Do you want to update it? (y/N)"):
                 shutil.rmtree(self.game_dir)
-                clone()
+                self.clone()
             else:
                 print("Ok, keeping the game as is...")
         else:
             if self.ask("You do not have a copy of the raptor game data files. " +
             "Do you want to download them? (y/N)"):
-                clone()
+                self.clone()
             else:
                 print("You cannot play the raptor game without downloading the data. " +
                 "Exiting...")
