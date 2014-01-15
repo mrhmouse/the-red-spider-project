@@ -153,7 +153,7 @@ class RaptorGame:
             else:
                 print("You cannot play the raptor game without downloading the data. " +
                 "Exiting...")
-                exit()
+                exit(42)
 
     def play_game(self):
         room_name = "Raptor-Game"
