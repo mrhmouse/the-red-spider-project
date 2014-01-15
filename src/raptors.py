@@ -8,10 +8,16 @@ class Option:
     """An option in a room in the raptor game."""
     def __init__(self, pieces):
         length = len(pieces)
-        if length == 2:
+        self.death = False
+        self.inv = False
+        if length == 4:
+            if pieces[0] == "INV":
+                self.inv = pieces[1]
+                self.label = pieces[3]
+                self.room = pieces[2]
+        elif length == 2:
             self.label = pieces[0]
             self.room = pieces[1]
-            self.death = False
         elif length == 1:
             if pieces[0] == "DIE":
                 self.death = True
@@ -136,12 +142,23 @@ class RaptorGame:
         |_| \_\/_/   \_\_|    |_| \___/|_| \_\  \____/_/   \_\_|  |_|_____|
 
                                                                             """)
+
+    def inventory(self, inv):
+        """Print the player's current inventory."""
+        if not inv == []:
+            print("Right now, you are carrying:")
+            for item in inv:
+                print(" - " + item)
+        else:
+            print("You don't have anythin in your inventory right now!  Go get some lootz!")
+
     def setup(self):
         """Setup the game data, if needed."""
         # https://github.com/blog/699-making-github-more-open-git-backed-wikis
         if os.path.exists(self.game_dir):
             if self.ask("You already have a copy of the raptor game data files. " +
-            "Do you want to update it? (y/N)"):
+            "Do you want to update it? (y/N) " +
+            "WARNING: This may  result in an unplayable game."):
                 shutil.rmtree(self.game_dir)
                 self.clone()
             else:
@@ -157,6 +174,8 @@ class RaptorGame:
 
     def play_game(self):
         room_name = "Raptor-Game"
+        inv = []
+        alreadyhave_inv = []
         while True:
             try:
                 current_room = Room(os.path.join(self.game_dir, room_name + ".md"))
@@ -166,11 +185,22 @@ class RaptorGame:
                 # Print the description.
                 print(current_room.description)
 
-                # Check for death
+                # Check for death and inventory
                 for option in current_room.options:
                     if option.death:
                         # The player has died.
-                        exit()
+                        exit(37)
+                    if option.inv:
+                        alreadyhave = False
+                        for item in alreadyhave_inv:
+                            if item == room_name + "/" + option.inv:
+                                alreadyhave = True
+                        if not alreadyhave:
+                            print("You pick up a " + option.inv)
+                            inv.append(option.inv)
+                            alreadyhave_inv.append(room_name + "/" + option.inv)
+                        else:
+                            print("You already got the " + option.inv + " from here.")
 
                 # Wait for input.
                 valid_response = False
@@ -182,24 +212,29 @@ class RaptorGame:
                         i += 1
 
                     try:
-                        response = int(self.inpt(""))
+                        response = self.inpt("")
+                        if response == "i":
+                            self.inventory(inv)
+                        else:
+                            response = int(response)
                     except ValueError:
                         print("Please choose a number.")
                         continue
 
-                    if len(current_room.options) <= response:
-                        print("Please choose one of the listed numbers.")
-                        continue
+                    if type(response) == int:
+                        if len(current_room.options) <= response:
+                            print("Please choose one of the listed numbers.")
+                            continue
 
-                    room_name = current_room.options[response].room
-                    valid_response = True
+                        room_name = current_room.options[response].room
+                        valid_response = True
             except FileNotFoundError:
                 print("The story has not been written this far yet.  Do you want to help?")
                 print("Go to `https://github.com/WesleyAC/the-red-spider-project/wiki/" +
                         room_name +
                         "/_edit` to decide what happens next!")
                 print("Read `https://github.com/WesleyAC/the-red-spider-project/wiki/How-to-make-a-raptor-room` to see how to make a room!")
-                exit()
+                exit(1337)
 
 if __name__ == "__main__":
     red_spider_root = os.path.expandvars("$RED_SPIDER_ROOT")
