@@ -259,6 +259,18 @@ class RaptorGame:
                 exit(2)
 
 if __name__ == "__main__":
-    red_spider_root = os.path.expandvars("$RED_SPIDER_ROOT")
-    game_dir = os.path.join(red_spider_root, "config", "raptors", "wiki")
-    game = RaptorGame(game_dir)
+    root = os.path.expandvars("$RED_SPIDER_ROOT")
+    if root == "$RED_SPIDER_ROOT":
+        print("Couldn't find your root directory. Could you point me to it?")
+        root = ""
+        while True:
+            root = input("? ")
+            if not os.path.exists(root):
+                print("I'm sorry, that doesn't appear to be a valid directory.")
+                print("Please input a valid directory.")
+                continue
+            else:
+                break
+    root = os.path.join(root, "config", "raptors", "wiki")
+    print("Working with folder: ", root)
+    game = RaptorGame(root)
