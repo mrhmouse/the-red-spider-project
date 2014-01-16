@@ -262,7 +262,6 @@ if __name__ == "__main__":
     root = os.path.expandvars("$RED_SPIDER_ROOT")
     if root == "$RED_SPIDER_ROOT":
         print("Couldn't find your root directory. Could you point me to it?")
-        root = ""
         while True:
             root = input("? ")
             if not os.path.exists(root):
