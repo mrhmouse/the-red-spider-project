@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
@@ -58,6 +59,15 @@ public static class Tutorial
     "point you to other sources for more help. " +
     "Let's get started!\n";
 
+  static string IssuesUrl =
+    "https://github.com/the-xkcd-community/" +
+    "the-red-spider-project/issues";
+
+  static string IdeasUrl =
+    "https://github.com/the-xkcd-community/" +
+    "the-red-spider-project/wiki/" +
+    "list-of-free-ideas";
+
   static Dictionary<string, Action> InitialOptions =
     new Dictionary<string, Action>
     {
@@ -70,11 +80,13 @@ public static class Tutorial
   static void Explore()
   {
     Display("Let's go exploring!");
+    MainMenu();
   }
 
   static void Learn()
   {
     Display("Let's learn about the RSP :)");
+    MainMenu();
   }
 
   static void Contribute()
@@ -95,27 +107,31 @@ public static class Tutorial
 
   static void HelpOut()
   {
-    // TODO
     Display("I'll show you how to help out!");
+    Display("Check out one of these projects!");
+    Process.Start(IssuesUrl);
+    MainMenu();
   }
 
   static void WorkOnMyOwn()
   {
     // TODO
     Display("I'll show you how to get started!");
+    MainMenu();
   }
 
   static void FreeIdeas()
   {
-    // TODO
-    // Pull these in realtime please :)
     Display("Here's a list of free ideas!");
+    Process.Start(IdeasUrl);
+    MainMenu();
   }
 
   static void Documentation()
   {
     // TODO
     Display("Here's how to help with documentation.");
+    MainMenu();
   }
 
   static void Quit()
@@ -133,8 +149,8 @@ public static class Tutorial
     bool newline = true)
   {
     foreach (var c in text
-      .Slowly(20, 80)
-      .InjectEvery(40, '\n'))
+      .Slowly(2, 80)
+      .InjectEvery(72, '\n'))
       Console.Write(c);
 
     if (newline) Console.Write('\n');
@@ -160,8 +176,17 @@ public static class Tutorial
         option.Text));
     }
 
-    Display("\n\n> ", false);
-    var response = Console.ReadLine().Trim();
+    Display("\n> ", false);
+    var response = Console.ReadLine();
+
+    if (response == null)
+    {
+      Display("Uhhh?");
+      Prompt(options);
+      return;
+    }
+
+    response = response.Trim();
     var chosen = list
       .FirstOrDefault(o => o.Index == response);
 
@@ -169,11 +194,11 @@ public static class Tutorial
     {
       Display("Sorry, I didn't get that...");
       Prompt(options);
+      return;
     }
-    else
-    {
-      chosen.Action();
-    }
+
+    Console.Clear();
+    chosen.Action();
   }
 
   static void Main()
