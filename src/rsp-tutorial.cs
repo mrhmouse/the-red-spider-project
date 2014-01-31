@@ -56,7 +56,7 @@ public static class Tutorial
     "\trsp-tutorial\n\n" +
     "I can even do some of the work for you and " +
     "point you to other sources for more help. " +
-    "Let's get started!\n\n";
+    "Let's get started!\n";
 
   static Dictionary<string, Action> InitialOptions =
     new Dictionary<string, Action>
@@ -69,30 +69,75 @@ public static class Tutorial
 
   static void Explore()
   {
-    Display("Let's go exploring!\n");
+    Display("Let's go exploring!");
   }
 
   static void Learn()
   {
-    Display("Let's learn about the RSP :)\n");
+    Display("Let's learn about the RSP :)");
   }
 
   static void Contribute()
   {
-    Display("I'll teach you how to contribute!\n");
+    Display("I'll teach you how to contribute!");
+    Prompt(new Dictionary<string, Action>
+    {
+      { "Help out with stuff other people are " +
+        "currently working on.",
+        HelpOut },
+      { "Work on an idea of my own.", WorkOnMyOwn },
+      { "Get inspired!", FreeIdeas },
+      { "Improve the documentation.", Documentation },
+      { "Go to the main menu.", MainMenu },
+      { "Quit.", Quit }
+    });
+  }
+
+  static void HelpOut()
+  {
+    // TODO
+    Display("I'll show you how to help out!");
+  }
+
+  static void WorkOnMyOwn()
+  {
+    // TODO
+    Display("I'll show you how to get started!");
+  }
+
+  static void FreeIdeas()
+  {
+    // TODO
+    // Pull these in realtime please :)
+    Display("Here's a list of free ideas!");
+  }
+
+  static void Documentation()
+  {
+    // TODO
+    Display("Here's how to help with documentation.");
   }
 
   static void Quit()
   {
-    Display("Bye now!\n");
+    Display("Bye now!");
   }
 
-  static void Display(string text)
+  static void MainMenu()
+  {
+    Prompt(InitialOptions);
+  }
+
+  static void Display(
+    string text,
+    bool newline = true)
   {
     foreach (var c in text
       .Slowly(20, 80)
       .InjectEvery(40, '\n'))
       Console.Write(c);
+
+    if (newline) Console.Write('\n');
   }
 
   static void Prompt(
@@ -110,19 +155,19 @@ public static class Tutorial
     foreach (var option in list)
     {
       Display(string.Format(
-        "{0}. {1}\n",
+        "{0}. {1}",
         option.Index,
         option.Text));
     }
 
-    Display("\n\n> ");
+    Display("\n\n> ", false);
     var response = Console.ReadLine().Trim();
     var chosen = list
       .FirstOrDefault(o => o.Index == response);
 
     if (chosen == null)
     {
-      Display("Sorry, I didn't get that...\n");
+      Display("Sorry, I didn't get that...");
       Prompt(options);
     }
     else
@@ -135,6 +180,6 @@ public static class Tutorial
   {
     Display(IntroText);
 
-    Prompt(InitialOptions);
+    MainMenu();
   }
 }
